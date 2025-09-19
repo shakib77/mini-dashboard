@@ -1,11 +1,12 @@
 
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, QueryObserverResult } from "@tanstack/react-query";
 
 type UseFetchResult<TData> = {
   data: TData | undefined;
   isLoading: boolean;
   isError: boolean;
   error: Error | null;
+  refetch: () => Promise<QueryObserverResult<TData, Error>>;
 };
 
 /**
@@ -15,13 +16,13 @@ type UseFetchResult<TData> = {
  * @template TData The expected type of the data to be fetched.
  * @param {readonly unknown[]} queryKey A unique key for the query, used by react-query for caching.
  * @param {string} endpoint The API endpoint to fetch from (e.g., 'posts', 'users/1').
- * @returns {UseFetchResult<TData>} An object containing the query state.
+ * @returns {UseFetchResult<TData>} An object containing the query state and refetch function.
  */
 export function useFetch<TData>(
   queryKey: readonly unknown[],
   endpoint: string,
 ): UseFetchResult<TData> {
-  const { data, isLoading, isError, error } = useQuery<TData, Error>({
+  const { data, isLoading, isError, error, refetch } = useQuery<TData, Error>({
     queryKey: queryKey,
     queryFn: async () => {
       const response = await fetch(
@@ -34,5 +35,5 @@ export function useFetch<TData>(
     },
   });
 
-  return { data, isLoading, isError, error };
+  return { data, isLoading, isError, error, refetch };
 }
