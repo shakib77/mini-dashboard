@@ -121,7 +121,7 @@ export default function PostsPage() {
           No posts found
         </h3>
         <p className="text-gray-500 text-center">
-          We couldn't find any posts. Try refreshing or check back later.
+          We couldn&#39;t find any posts. Try refreshing or check back later.
         </p>
       </div>
     );
