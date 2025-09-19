@@ -5,6 +5,7 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { type Post } from "@/lib/api";
 import { use, useState } from "react";
+import Button from "@/components/ui/Button";
 
 export default function PostDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const unwrappedParams = use(params);
@@ -35,12 +36,7 @@ export default function PostDetailPage({ params }: { params: Promise<{ id: strin
       return (
         <div className="text-center text-red-500">
           <p className="mb-4">Error: {error?.message ?? "Failed to load post."}</p>
-          <button
-            onClick={handleRefetch}
-            className="bg-blue-500 text-white font-bold py-2 px-4 rounded hover:bg-blue-700 transition-colors"
-          >
-            Retry
-          </button>
+          <Button onClick={handleRefetch}>Retry</Button>
         </div>
       );
     }
@@ -72,18 +68,10 @@ export default function PostDetailPage({ params }: { params: Promise<{ id: strin
           &larr; Back to Posts
         </Link>
         <div className="flex space-x-2">
-          <button
-            onClick={handleRefetch}
-            className="bg-blue-500 text-white font-bold py-2 px-4 rounded hover:bg-blue-700 transition-colors"
-          >
-            Refetch
-          </button>
-          <button
-            onClick={() => setForceError(true)}
-            className="bg-red-500 text-white font-bold py-2 px-4 rounded hover:bg-red-700 transition-colors"
-          >
+          <Button onClick={handleRefetch}>Refetch</Button>
+          <Button onClick={() => setForceError(true)} variant="danger">
             Simulate Error
-          </button>
+          </Button>
         </div>
       </div>
 

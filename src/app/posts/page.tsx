@@ -1,7 +1,8 @@
-"use client";
+'use client';
 
 import { Fragment, useRef, useState } from "react";
 import Card from "@/components/ui/Card";
+import Button from "@/components/ui/Button";
 import { motion, type Variants } from "framer-motion";
 import { useInfinitePosts } from "@/hooks/useInfinitePosts";
 
@@ -23,7 +24,7 @@ const cardVariants: Variants = {
 export default function PostsPage() {
   const loadMoreRef = useRef<HTMLButtonElement>(null);
   const [forceError, setForceError] = useState(false);
-  const endpoint = forceError ? "invalid-endpoint" : "posts";
+  const endpoint = forceError ? 'invalid-endpoint' : 'posts';
 
   const {
     data,
@@ -51,15 +52,8 @@ export default function PostsPage() {
     if (status === "error") {
       return (
         <div className="text-center text-red-500">
-          <p className="mb-4">
-            Error: {error?.message ?? "An unknown error occurred."}
-          </p>
-          <button
-            onClick={handleRefetch}
-            className="bg-blue-500 text-white font-bold py-2 px-4 rounded hover:bg-blue-700 transition-colors"
-          >
-            Retry
-          </button>
+          <p className="mb-4">Error: {error?.message ?? "An unknown error occurred."}</p>
+          <Button onClick={handleRefetch}>Retry</Button>
         </div>
       );
     }
@@ -91,18 +85,17 @@ export default function PostsPage() {
           </motion.div>
 
           <div className="flex justify-center mt-6">
-            <button
+            <Button
               ref={loadMoreRef}
               onClick={() => fetchNextPage()}
               disabled={!hasNextPage || isFetchingNextPage}
-              className="px-4 py-2 bg-blue-600 text-white rounded-md disabled:bg-gray-400"
             >
               {isFetchingNextPage
                 ? "Loading more..."
                 : hasNextPage
-                  ? "Load More"
-                  : "Nothing more to load"}
-            </button>
+                ? "Load More"
+                : "Nothing more to load"}
+            </Button>
           </div>
         </>
       );
@@ -139,18 +132,10 @@ export default function PostsPage() {
       <div className="flex justify-between items-center mb-4">
         <h1 className="text-2xl font-bold">Posts</h1>
         <div className="flex space-x-2">
-          <button
-            onClick={handleRefetch}
-            className="bg-blue-500 text-white font-bold py-2 px-4 rounded hover:bg-blue-700 transition-colors"
-          >
-            Refetch
-          </button>
-          <button
-            onClick={() => setForceError(true)}
-            className="bg-red-500 text-white font-bold py-2 px-4 rounded hover:bg-red-700 transition-colors"
-          >
+          <Button onClick={handleRefetch}>Refetch</Button>
+          <Button onClick={() => setForceError(true)} variant="danger">
             Simulate Error
-          </button>
+          </Button>
         </div>
       </div>
 

@@ -1,9 +1,11 @@
-"use client";
+'use client';
 
-import { useFetch } from "@/hooks/useFetch";
-import Modal from "@/components/ui/Modal";
-import { useState } from "react";
+import { useFetch } from '@/hooks/useFetch';
+import Modal from '@/components/ui/Modal';
+import Button from '@/components/ui/Button';
+import { useState } from 'react';
 
+// Define the type for a user object based on the API response
 interface User {
   id: number;
   name: string;
@@ -26,22 +28,20 @@ const USERS_PER_PAGE = 5;
 export default function UsersPage() {
   const [forceError, setForceError] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-  const endpoint = forceError ? "invalid-endpoint" : "users";
+  const endpoint = forceError ? 'invalid-endpoint' : 'users';
 
-  const {
-    data: users,
-    isLoading,
-    isError,
-    error,
-    refetch,
-  } = useFetch<User[]>(["users", endpoint], endpoint);
+  const { data: users, isLoading, isError, error, refetch } = useFetch<User[]>(
+    ['users', endpoint],
+    endpoint
+  );
 
+  // State to manage the selected user for the modal
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
 
   const handleRefetch = () => {
     setCurrentPage(1);
     if (forceError) {
-      setForceError(false);
+      setForceError(false); // This will reset the endpoint and trigger a correct fetch
     } else {
       refetch();
     }
@@ -55,15 +55,8 @@ export default function UsersPage() {
     if (isError) {
       return (
         <div className="text-center">
-          <p className="mb-4 text-red-500">
-            Error loading users: {error?.message || "Unknown error"}
-          </p>
-          <button
-            onClick={handleRefetch}
-            className="bg-blue-500 text-white font-bold py-2 px-4 rounded hover:bg-blue-700 transition-colors"
-          >
-            Retry
-          </button>
+          <p className="mb-4 text-red-500">Error loading users: {error?.message || 'Unknown error'}</p>
+          <Button onClick={handleRefetch}>Retry</Button>
         </div>
       );
     }
@@ -72,6 +65,7 @@ export default function UsersPage() {
       return <p className="text-center text-gray-500">No users found.</p>;
     }
 
+    // Pagination logic
     const totalPages = Math.ceil(users.length / USERS_PER_PAGE);
     const indexOfLastUser = currentPage * USERS_PER_PAGE;
     const indexOfFirstUser = indexOfLastUser - USERS_PER_PAGE;
@@ -124,26 +118,25 @@ export default function UsersPage() {
           </div>
         </div>
 
+        {/* Pagination Controls */}
         <div className="flex justify-between items-center mt-4">
-          <button
+          <Button
             onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
             disabled={currentPage === 1}
-            className="px-4 py-2 bg-gray-300 text-gray-800 rounded-md disabled:opacity-50 disabled:cursor-not-allowed"
+            variant="secondary"
           >
             Previous
-          </button>
+          </Button>
           <span className="text-gray-700">
             Page {currentPage} of {totalPages}
           </span>
-          <button
-            onClick={() =>
-              setCurrentPage((prev) => Math.min(prev + 1, totalPages))
-            }
+          <Button
+            onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
             disabled={currentPage === totalPages}
-            className="px-4 py-2 bg-gray-300 text-gray-800 rounded-md disabled:opacity-50 disabled:cursor-not-allowed"
+            variant="secondary"
           >
             Next
-          </button>
+          </Button>
         </div>
       </>
     );
@@ -154,18 +147,10 @@ export default function UsersPage() {
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold text-gray-800">Users</h1>
         <div className="flex space-x-2">
-          <button
-            onClick={handleRefetch}
-            className="bg-blue-500 text-white font-bold py-2 px-4 rounded hover:bg-blue-700 transition-colors"
-          >
-            Refetch Data
-          </button>
-          <button
-            onClick={() => setForceError(true)}
-            className="bg-red-500 text-white font-bold py-2 px-4 rounded hover:bg-red-700 transition-colors"
-          >
+          <Button onClick={handleRefetch}>Refetch Data</Button>
+          <Button onClick={() => setForceError(true)} variant="danger">
             Simulate Error
-          </button>
+          </Button>
         </div>
       </div>
 
@@ -174,34 +159,13 @@ export default function UsersPage() {
       <Modal isOpen={!!selectedUser} onClose={() => setSelectedUser(null)}>
         {selectedUser && (
           <div>
-            <h2 className="text-2xl font-bold mb-4 text-gray-800">
-              {selectedUser.name}
-            </h2>
+            <h2 className="text-2xl font-bold mb-4 text-gray-800">{selectedUser.name}</h2>
             <div className="space-y-2 text-gray-600">
-              <p>
-                <strong>Email:</strong> {selectedUser.email}
-              </p>
-              <p>
-                <strong>Phone:</strong> {selectedUser.phone}
-              </p>
-              <p>
-                <strong>Website:</strong>{" "}
-                <a
-                  href={`http://${selectedUser.website}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-blue-500 hover:underline"
-                >
-                  {selectedUser.website}
-                </a>
-              </p>
-              <p>
-                <strong>Company:</strong> {selectedUser.company.name}
-              </p>
-              <p>
-                <strong>Address:</strong>{" "}
-                {`${selectedUser.address.street}, ${selectedUser.address.suite}, ${selectedUser.address.city}, ${selectedUser.address.zipcode}`}
-              </p>
+              <p><strong>Email:</strong> {selectedUser.email}</p>
+              <p><strong>Phone:</strong> {selectedUser.phone}</p>
+              <p><strong>Website:</strong> <a href={`http://${selectedUser.website}`} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">{selectedUser.website}</a></p>
+              <p><strong>Company:</strong> {selectedUser.company.name}</p>
+              <p><strong>Address:</strong> {`${selectedUser.address.street}, ${selectedUser.address.suite}, ${selectedUser.address.city}, ${selectedUser.address.zipcode}`}</p>
             </div>
           </div>
         )}
